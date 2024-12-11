@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tp_flutter/message_list_screen/message_bloc/message_bloc.dart';
 import 'package:tp_flutter/message_list_screen/message_detail_screen/message_detail_screen.dart';
-import 'package:tp_flutter/message_list_screen/widgets/message_icon.dart';
 import 'package:tp_flutter/message_list_screen/widgets/message_list_item.dart';
 
 import '../add_message_screen/add_message_screen.dart';
@@ -55,21 +54,21 @@ class _MessageListScreenState extends State<MessageListScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Chatting with myself'),
-          actions: [
-            MessageIcon(
-              onTap: () => _openAddMessageScreen(context),
-            )
-          ],
         ),
         body: BlocBuilder<MessageBloc, MessageState>(builder: (context, state) {
           return switch (state.status) {
             MessageStatus.initial ||
             MessageStatus.loading =>
-              _buildLoading(context),
+                _buildLoading(context),
             MessageStatus.error => _buildError(context, state.exception),
             MessageStatus.success => _buildSuccess(context, state.messages),
           };
         }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _openAddMessageScreen(context),
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.blue,
+        ),
       ),
     );
   }
@@ -82,7 +81,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
 
   Widget _buildError(BuildContext context, AppException? exception) {
     return Center(
-      child: Text('Oups, une erreur est survenur: $exception'),
+      child: Text('Oups, une erreur est survenue: $exception'),
     );
   }
 
@@ -123,7 +122,7 @@ void _showSnackBar(BuildContext context, AppException? exception,
     content: Text(
       status == "success"
           ? "Opération réussie !"
-          : "Une erreur s'est produite : ${exception}",
+          : "Une erreur s'est produite : $exception",
     ),
     backgroundColor: status == "success" ? Colors.green : Colors.red,
     duration: const Duration(seconds: 1),
@@ -131,3 +130,4 @@ void _showSnackBar(BuildContext context, AppException? exception,
 
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
+
